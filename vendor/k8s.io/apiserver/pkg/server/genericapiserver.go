@@ -24,7 +24,7 @@ import (
 	"time"
 
 	systemd "github.com/coreos/go-systemd/daemon"
-	"github.com/golang/glog"
+	"k8s.io/klog"
 
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -293,7 +293,7 @@ func (s preparedGenericAPIServer) NonBlockingRun(stopCh <-chan struct{}) error {
 	s.RunPostStartHooks(stopCh)
 
 	if _, err := systemd.SdNotify(true, "READY=1\n"); err != nil {
-		glog.Errorf("Unable to send systemd daemon successful start message: %v\n", err)
+		klog.Errorf("Unable to send systemd daemon successful start message: %v\n", err)
 	}
 
 	return nil
@@ -303,7 +303,7 @@ func (s preparedGenericAPIServer) NonBlockingRun(stopCh <-chan struct{}) error {
 func (s *GenericAPIServer) installAPIResources(apiPrefix string, apiGroupInfo *APIGroupInfo) error {
 	for _, groupVersion := range apiGroupInfo.PrioritizedVersions {
 		if len(apiGroupInfo.VersionedResourcesStorageMap[groupVersion.Version]) == 0 {
-			glog.Warningf("Skipping API %v because it has no resources.", groupVersion)
+			klog.Warningf("Skipping API %v because it has no resources.", groupVersion)
 			continue
 		}
 
